@@ -1260,21 +1260,19 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
       {/* Simple progress bar for auto-pilot activation */}
       {isHolding && holdProgress > 0 && (
         <motion.div
-          className="absolute z-50 w-48 h-2 bg-gray-800/60 rounded-full overflow-hidden"
-          style={{
-            top: "calc(50% - 80px)",
-            left: "50%",
-            transform: "translateX(-50%)",
-          }}
+          className="absolute z-50 w-full flex justify-center"
+          style={{ top: "calc(50% - 80px)" }}
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
         >
-          <motion.div
-            className="h-full bg-blue-500 rounded-full"
-            style={{ width: `${holdProgress * 100}%` }}
-            transition={{ duration: 0.1, ease: "easeOut" }}
-          />
+          <div className="w-48 h-2 bg-gray-800/60 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-blue-500 rounded-full"
+              style={{ width: `${holdProgress * 100}%` }}
+              transition={{ duration: 0.1, ease: "easeOut" }}
+            />
+          </div>
         </motion.div>
       )}
 
