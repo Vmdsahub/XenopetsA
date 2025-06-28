@@ -54,7 +54,7 @@ const generateCircularPoints = () => {
     },
     {
       id: "estacao-omega",
-      name: "Estação Omega",
+      name: "Esta��ão Omega",
       type: "station" as const,
       description: "Centro comercial da galáxia",
       image:
@@ -678,15 +678,8 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
         WORLD_CONFIG.height,
       );
 
-      // Verifica colisão com barreira
-      const currentMapX = mapX.get();
-      const currentMapY = mapY.get();
-      const deltaMapX = (shipPosRef.current.x - proposedX) * 12;
-      const deltaMapY = (shipPosRef.current.y - proposedY) * 12;
-      const proposedMapX = currentMapX + deltaMapX;
-      const proposedMapY = currentMapY + deltaMapY;
-
-      const collision = checkBarrierCollision(proposedMapX, proposedMapY);
+      // Verifica colisão com barreira usando coordenadas da nave
+      const collision = checkBarrierCollision(proposedX, proposedY);
       if (collision.isColliding) {
         // Para o auto-piloto em caso de colisão
         setIsAutoPilot(false);
@@ -794,18 +787,11 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
           WORLD_CONFIG.height,
         );
 
-        // Verifica colisão com barreira circular no momentum usando coordenadas visuais
+        // Verifica colisão com barreira usando coordenadas da nave
         let newX = proposedX;
         let newY = proposedY;
 
-        const currentMapX = mapX.get();
-        const currentMapY = mapY.get();
-        const deltaMapX = (shipPosRef.current.x - proposedX) * 12;
-        const deltaMapY = (shipPosRef.current.y - proposedY) * 12;
-        const proposedMapX = currentMapX + deltaMapX;
-        const proposedMapY = currentMapY + deltaMapY;
-
-        const collision = checkBarrierCollision(proposedMapX, proposedMapY);
+        const collision = checkBarrierCollision(proposedX, proposedY);
         if (collision.isColliding) {
           // Ativa flash vermelho
           setIsColliding(true);
@@ -998,20 +984,12 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
       WORLD_CONFIG.height,
     );
 
-    // Verifica colisão com barreira circular usando coordenadas visuais
+    // Verifica colisão com barreira usando coordenadas da nave
     let newX = proposedX;
     let newY = proposedY;
     let allowMovement = true;
 
-    // Calcula posição visual proposta baseada no movimento do mapa
-    const currentMapX = mapX.get();
-    const currentMapY = mapY.get();
-    const deltaMapX = (shipPosRef.current.x - proposedX) * 12;
-    const deltaMapY = (shipPosRef.current.y - proposedY) * 12;
-    const proposedMapX = currentMapX + deltaMapX;
-    const proposedMapY = currentMapY + deltaMapY;
-
-    const collision = checkBarrierCollision(proposedMapX, proposedMapY);
+    const collision = checkBarrierCollision(proposedX, proposedY);
     if (collision.isColliding) {
       // Ativa flash vermelho
       setIsColliding(true);
@@ -1115,19 +1093,12 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
         WORLD_CONFIG.height,
       );
 
-      // Verifica colisão com barreira circular usando coordenadas visuais
+      // Verifica colisão com barreira usando coordenadas da nave
       let newX = proposedX;
       let newY = proposedY;
       let allowMovement = true;
 
-      const currentMapX = mapX.get();
-      const currentMapY = mapY.get();
-      const deltaMapX = (shipPosRef.current.x - proposedX) * 12;
-      const deltaMapY = (shipPosRef.current.y - proposedY) * 12;
-      const proposedMapX = currentMapX + deltaMapX;
-      const proposedMapY = currentMapY + deltaMapY;
-
-      const collision = checkBarrierCollision(proposedMapX, proposedMapY);
+      const collision = checkBarrierCollision(proposedX, proposedY);
       if (collision.isColliding) {
         // Ativa flash vermelho
         setIsColliding(true);
