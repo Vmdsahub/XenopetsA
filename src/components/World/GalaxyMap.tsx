@@ -586,8 +586,8 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
   // Função para verificar colisão com barreira - versão corrigida para usar coordenadas da nave
   const checkBarrierCollision = useCallback(
     (proposedShipX: number, proposedShipY: number) => {
-      // Limites da barreira: raio de 30% do mundo (60% de diâmetro)
-      const barrierRadius = 30; // 30% do centro = raio de 30%
+      // Limites da barreira: raio de 100% do mundo (ou seja, sem limite por enquanto para testar)
+      const barrierRadius = 100; // 100% = sem colisão para testar
 
       // Centro do mundo em coordenadas %
       const worldCenterX = 50; // Centro em 50%
@@ -610,8 +610,7 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
         const angle = Math.atan2(deltaY, deltaX);
 
         // Ponto de colisão na borda da barreira (em coordenadas de tela)
-        // Converte raio de 30% para pixels (assumindo escala visual)
-        const visualRadius = barrierRadius * 12; // Aproximadamente 360px
+        const visualRadius = 1200; // Mantém o raio visual original de 1200px
         const collisionX = centerX + Math.cos(angle) * visualRadius;
         const collisionY = centerY + Math.sin(angle) * visualRadius;
 
@@ -1380,8 +1379,8 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
           style={{
             left: "50%", // Centro do mundo (100% = WORLD_CONFIG.width)
             top: "50%", // Centro do mundo (100% = WORLD_CONFIG.height)
-            width: "720px", // Diâmetro 720px = 360px de raio (30% * 12)
-            height: "720px",
+            width: "2400px", // Diâmetro 2400px = 1200px de raio
+            height: "2400px",
             transform: "translate(-50%, -50%)",
             borderRadius: "50%",
             zIndex: 5,
