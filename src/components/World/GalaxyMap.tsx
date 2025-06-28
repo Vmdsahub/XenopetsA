@@ -1257,11 +1257,13 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
       }`}
       style={{ userSelect: "none" }}
     >
-      {/* Indicador de progresso do hold para auto-piloto - NOVO DESIGN */}
+      {/* Indicador de progresso do hold para auto-piloto - DESIGN CORRIGIDO */}
       {isHolding && holdProgress > 0 && (
         <motion.div
-          className="absolute left-1/2 transform -translate-x-1/2 z-50"
-          style={{ top: "calc(50% - 80px)" }} // Posicionado acima da nave
+          className="absolute top-1/2 left-1/2 z-50"
+          style={{ 
+            transform: "translate(-50%, calc(-50% - 80px))" // Centralizado e 80px acima da nave
+          }}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 10 }}
