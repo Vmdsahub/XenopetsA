@@ -129,9 +129,6 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
   const [nearbyPoint, setNearbyPoint] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isColliding, setIsColliding] = useState(false);
-  const [sparks, setSparks] = useState<
-    Array<{ id: number; x: number; y: number; dx: number; dy: number }>
-  >([]);
   const [collisionNotification, setCollisionNotification] = useState<{
     show: boolean;
     id: number;
@@ -521,71 +518,57 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
     };
   }, [shipRotation]);
 
-  // Função para criar faíscas de colisão
-  const createCollisionSparks = useCallback(
-    (collisionX: number, collisionY: number) => {
-      const newSparks = Array.from({ length: 12 }, (_, i) => ({
-        id: Date.now() + i,
-        x: collisionX,
-        y: collisionY,
-        dx: (Math.random() - 0.5) * 120,
-        dy: (Math.random() - 0.5) * 120,
-      }));
-
-      setSparks(newSparks);
-
-      // Remove faíscas após animação
-      setTimeout(() => setSparks([]), 800);
-    },
-    [],
-  );
-
   // Função para repelir o jogador
-  const repelPlayer = useCallback((collisionX: number, collisionY: number) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  const repelPlayer = useCallback(
+    (collisionX: number, collisionY: number) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
 
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
 
-    // Calcula direção da repulsão (do centro da barreira para fora)
-    const repelDirectionX = collisionX - centerX;
-    const repelDirectionY = collisionY - centerY;
-    const distance = Math.sqrt(repelDirectionX * repelDirectionX + repelDirectionY * repelDirectionY);
+      // Calcula direção da repulsão (do centro da barreira para fora)
+      const repelDirectionX = collisionX - centerX;
+      const repelDirectionY = collisionY - centerY;
+      const distance = Math.sqrt(
+        repelDirectionX * repelDirectionX + repelDirectionY * repelDirectionY,
+      );
 
-    if (distance > 0) {
-      // Normaliza a direção e aplica força de repulsão
-      const normalizedX = repelDirectionX / distance;
-      const normalizedY = repelDirectionY / distance;
-      const repelForce = 15; // Força da repulsão
+      if (distance > 0) {
+        // Normaliza a direção e aplica força de repulsão
+        const normalizedX = repelDirectionX / distance;
+        const normalizedY = repelDirectionY / distance;
+        const repelForce = 15; // Força da repulsão
 
-      // Para o movimento atual imediatamente
-      setVelocity({ x: 0, y: 0 });
-      setIsDecelerating(false);
+        // Para o movimento atual imediatamente
+        setVelocity({ x: 0, y: 0 });
+        setIsDecelerating(false);
 
-      // Aplica repulsão ao mapa (movimento inverso)
-      const currentMapX = mapX.get();
-      const currentMapY = mapY.get();
-      
-      animate(mapX, currentMapX - normalizedX * repelForce, { 
-        duration: 0.3, 
-        ease: "easeOut" 
-      });
-      animate(mapY, currentMapY - normalizedY * repelForce, { 
-        duration: 0.3, 
-        ease: "easeOut" 
-      });
+        // Aplica repulsão ao mapa (movimento inverso)
+        const currentMapX = mapX.get();
+        const currentMapY = mapY.get();
 
-      // Atualiza posição da nave correspondentemente
-      const repelShipX = normalizedX * repelForce / 12;
-      const repelShipY = normalizedY * repelForce / 12;
-      
-      setShipPosition(prev => ({
-        x: wrap(prev.x + repelShipX, 0, WORLD_CONFIG.width),
-        y: wrap(prev.y + repelShipY, 0, WORLD_CONFIG.height)
-      }));
-    }
-  }, [mapX, mapY]);
+        animate(mapX, currentMapX - normalizedX * repelForce, {
+          duration: 0.3,
+          ease: "easeOut",
+        });
+        animate(mapY, currentMapY - normalizedY * repelForce, {
+          duration: 0.3,
+          ease: "easeOut",
+        });
+
+        // Atualiza posição da nave correspondentemente
+        const repelShipX = (normalizedX * repelForce) / 12;
+        const repelShipY = (normalizedY * repelForce) / 12;
+
+        setShipPosition((prev) => ({
+          x: wrap(prev.x + repelShipX, 0, WORLD_CONFIG.width),
+          y: wrap(prev.y + repelShipY, 0, WORLD_CONFIG.height),
+        }));
+      }
+    },
+    [mapX, mapY],
+  );
 
   // Função para mostrar notificação de colisão local
   const showCollisionNotification = useCallback(() => {
@@ -594,8 +577,8 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
 
     // Remove a notificação após 4 segundos
     setTimeout(() => {
-      setCollisionNotification(prev => 
-        prev.id === notificationId ? { show: false, id: 0 } : prev
+      setCollisionNotification((prev) =>
+        prev.id === notificationId ? { show: false, id: 0 } : prev,
       );
     }, 4000);
   }, []);
@@ -622,7 +605,7 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
 
         // Calcula o ponto exato de colisão na borda da barreira
         const angle = Math.atan2(proposedMapY, proposedMapX);
-        
+
         // Ponto de colisão na borda da barreira (em coordenadas de tela)
         const collisionX = centerX + Math.cos(angle) * barrierRadius;
         const collisionY = centerY + Math.sin(angle) * barrierRadius;
@@ -640,29 +623,32 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
   );
 
   // Função para atualizar direção do auto-piloto baseada na posição do mouse
-  const updateAutoPilotDirection = useCallback((mouseX: number, mouseY: number) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  const updateAutoPilotDirection = useCallback(
+    (mouseX: number, mouseY: number) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
 
-    const rect = canvas.getBoundingClientRect();
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    
-    // Converte coordenadas do mouse para posição relativa ao canvas
-    const relativeMouseX = mouseX - rect.left;
-    const relativeMouseY = mouseY - rect.top;
-    
-    const dirX = relativeMouseX - centerX;
-    const dirY = relativeMouseY - centerY;
-    const length = Math.sqrt(dirX * dirX + dirY * dirY);
-    
-    if (length > 0) {
-      setAutoPilotDirection({
-        x: dirX / length,
-        y: dirY / length
-      });
-    }
-  }, []);
+      const rect = canvas.getBoundingClientRect();
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      // Converte coordenadas do mouse para posição relativa ao canvas
+      const relativeMouseX = mouseX - rect.left;
+      const relativeMouseY = mouseY - rect.top;
+
+      const dirX = relativeMouseX - centerX;
+      const dirY = relativeMouseY - centerY;
+      const length = Math.sqrt(dirX * dirX + dirY * dirY);
+
+      if (length > 0) {
+        setAutoPilotDirection({
+          x: dirX / length,
+          y: dirY / length,
+        });
+      }
+    },
+    [],
+  );
 
   // Sistema de auto-piloto que segue o mouse constantemente
   useEffect(() => {
@@ -702,10 +688,6 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
         setIsColliding(true);
         setTimeout(() => setIsColliding(false), 200);
         if (collision.collisionPoint) {
-          createCollisionSparks(
-            collision.collisionPoint.x,
-            collision.collisionPoint.y,
-          );
           repelPlayer(collision.collisionPoint.x, collision.collisionPoint.y);
         }
         playBarrierCollisionSound();
@@ -724,7 +706,10 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
       mapY.set(newMapY);
 
       // Atualiza rotação da nave para seguir a direção
-      const angle = Math.atan2(-autoPilotDirection.y, -autoPilotDirection.x) * (180 / Math.PI) + 90;
+      const angle =
+        Math.atan2(-autoPilotDirection.y, -autoPilotDirection.x) *
+          (180 / Math.PI) +
+        90;
       targetRotation.current = angle;
 
       animationId = requestAnimationFrame(autoPilotMovement);
@@ -737,7 +722,15 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
         cancelAnimationFrame(animationId);
       }
     };
-  }, [isAutoPilot, autoPilotDirection, mapX, mapY, checkBarrierCollision, createCollisionSparks, repelPlayer, showCollisionNotification]);
+  }, [
+    isAutoPilot,
+    autoPilotDirection,
+    mapX,
+    mapY,
+    checkBarrierCollision,
+    repelPlayer,
+    showCollisionNotification,
+  ]);
 
   // Sistema de rastreamento do mouse durante auto-piloto
   useEffect(() => {
@@ -748,10 +741,10 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
       updateAutoPilotDirection(e.clientX, e.clientY);
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener("mousemove", handleMouseMove);
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener("mousemove", handleMouseMove);
     };
   }, [isAutoPilot, updateAutoPilotDirection]);
 
@@ -809,14 +802,10 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
 
         const collision = checkBarrierCollision(proposedMapX, proposedMapY);
         if (collision.isColliding) {
-          // Ativa flash vermelho e faíscas
+          // Ativa flash vermelho
           setIsColliding(true);
           setTimeout(() => setIsColliding(false), 200); // Flash de 0.2 segundos
           if (collision.collisionPoint) {
-            createCollisionSparks(
-              collision.collisionPoint.x,
-              collision.collisionPoint.y,
-            );
             repelPlayer(collision.collisionPoint.x, collision.collisionPoint.y);
           }
           // Reproduz som de colisão
@@ -850,7 +839,15 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
         }
       };
     }
-  }, [isDragging, isAutoPilot, mapX, mapY, checkBarrierCollision, createCollisionSparks, repelPlayer, showCollisionNotification]);
+  }, [
+    isDragging,
+    isAutoPilot,
+    mapX,
+    mapY,
+    checkBarrierCollision,
+    repelPlayer,
+    showCollisionNotification,
+  ]);
 
   // Função para calcular distância toroidal correta
   const getToroidalDistance = (
@@ -949,7 +946,7 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
     setIsDragging(true);
     setHasMoved(false);
     lastMousePos.current = { x: e.clientX, y: e.clientY };
-    
+
     // Inicia o timer para auto-piloto
     const startTime = Date.now();
     setHoldStartTime(startTime);
@@ -1011,14 +1008,10 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
 
     const collision = checkBarrierCollision(proposedMapX, proposedMapY);
     if (collision.isColliding) {
-      // Ativa flash vermelho e faíscas
+      // Ativa flash vermelho
       setIsColliding(true);
       setTimeout(() => setIsColliding(false), 200); // Flash de 0.2 segundos
       if (collision.collisionPoint) {
-        createCollisionSparks(
-          collision.collisionPoint.x,
-          collision.collisionPoint.y,
-        );
         repelPlayer(collision.collisionPoint.x, collision.collisionPoint.y);
       }
       // Reproduz som de colisão
@@ -1131,14 +1124,10 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
 
       const collision = checkBarrierCollision(proposedMapX, proposedMapY);
       if (collision.isColliding) {
-        // Ativa flash vermelho e faíscas
+        // Ativa flash vermelho
         setIsColliding(true);
         setTimeout(() => setIsColliding(false), 200); // Flash de 0.2 segundos
         if (collision.collisionPoint) {
-          createCollisionSparks(
-            collision.collisionPoint.x,
-            collision.collisionPoint.y,
-          );
           repelPlayer(collision.collisionPoint.x, collision.collisionPoint.y);
         }
         // Reproduz som de colisão
@@ -1216,7 +1205,6 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
     mapY,
     shipRotation,
     checkBarrierCollision,
-    createCollisionSparks,
     repelPlayer,
     showCollisionNotification,
   ]);
@@ -1262,7 +1250,11 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
     <div
       ref={containerRef}
       className={`relative w-full h-[650px] bg-gradient-to-br from-gray-950 via-slate-900 to-black rounded-2xl overflow-hidden ${
-        isDragging ? "cursor-grabbing" : isAutoPilot ? "cursor-pointer" : "cursor-grab"
+        isDragging
+          ? "cursor-grabbing"
+          : isAutoPilot
+            ? "cursor-pointer"
+            : "cursor-grab"
       }`}
       style={{ userSelect: "none" }}
     >
@@ -1291,7 +1283,13 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
                 className="transition-all duration-100 ease-out"
               />
               <defs>
-                <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <linearGradient
+                  id="progressGradient"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="0%"
+                >
                   <stop offset="0%" stopColor="#3b82f6" />
                   <stop offset="100%" stopColor="#8b5cf6" />
                 </linearGradient>
@@ -1341,7 +1339,9 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
         >
           <div className="text-center">
             <p className="text-xs text-white/90 leading-relaxed">
-              <span className="font-semibold">⚠️ Ei!</span> A sua Xenoship mal aguenta a força da gravidade,<br />
+              <span className="font-semibold">⚠️ Ei!</span> A sua Xenoship mal
+              aguenta a força da gravidade,
+              <br />
               esqueceu que ela é muito frágil pra explorar os cosmos?
             </p>
           </div>
@@ -1430,38 +1430,6 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
               },
             }}
           />
-
-          {/* Faíscas de colisão melhoradas - CORRIGIDAS para aparecer apenas na barreira */}
-          {sparks.map((spark) => (
-            <motion.div
-              key={spark.id}
-              className="absolute w-3 h-3 rounded-full pointer-events-none"
-              style={{
-                left: spark.x - 6, // Centrar a faísca
-                top: spark.y - 6,
-                background: "radial-gradient(circle, #ff6b35, #f7931e)",
-                boxShadow:
-                  "0 0 12px rgba(255, 107, 53, 1), 0 0 24px rgba(247, 147, 30, 0.8)",
-                zIndex: 10,
-              }}
-              initial={{
-                x: 0,
-                y: 0,
-                opacity: 1,
-                scale: 1,
-              }}
-              animate={{
-                x: spark.dx,
-                y: spark.dy,
-                opacity: 0,
-                scale: 0.1,
-              }}
-              transition={{
-                duration: 0.8,
-                ease: "easeOut",
-              }}
-            />
-          ))}
         </div>
         {/* Renderiza apenas uma vez */}
         <div className="absolute inset-0">{renderPoints()}</div>
@@ -1481,9 +1449,7 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white/20 text-xs font-mono font-thin">
         X: {mapX.get().toFixed(1)} Y: {mapY.get().toFixed(1)}
         {isAutoPilot && (
-          <span className="ml-4 text-blue-300">
-            [AUTO-PILOTO]
-          </span>
+          <span className="ml-4 text-blue-300">[AUTO-PILOTO]</span>
         )}
       </div>
     </div>
