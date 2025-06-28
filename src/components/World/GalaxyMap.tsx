@@ -1257,54 +1257,104 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
       }`}
       style={{ userSelect: "none" }}
     >
-      {/* Indicador de progresso do hold para auto-piloto */}
+      {/* Indicador de progresso do hold para auto-piloto - NOVO DESIGN */}
       {isHolding && holdProgress > 0 && (
         <motion.div
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.8 }}
+          className="absolute left-1/2 transform -translate-x-1/2 z-50"
+          style={{ top: "calc(50% - 80px)" }} // Posicionado acima da nave
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 10 }}
         >
-          <div className="relative w-24 h-24">
-            {/* Círculo de fundo */}
-            <div className="absolute inset-0 rounded-full border-4 border-white/20"></div>
-            {/* Círculo de progresso */}
-            <svg className="absolute inset-0 w-full h-full transform -rotate-90">
-              <circle
-                cx="48"
-                cy="48"
-                r="44"
-                stroke="url(#progressGradient)"
-                strokeWidth="4"
-                fill="none"
-                strokeDasharray={`${2 * Math.PI * 44}`}
-                strokeDashoffset={`${2 * Math.PI * 44 * (1 - holdProgress)}`}
-                className="transition-all duration-100 ease-out"
-              />
-              <defs>
-                <linearGradient
-                  id="progressGradient"
-                  x1="0%"
-                  y1="0%"
-                  x2="100%"
-                  y2="0%"
-                >
-                  <stop offset="0%" stopColor="#3b82f6" />
-                  <stop offset="100%" stopColor="#8b5cf6" />
-                </linearGradient>
-              </defs>
-            </svg>
-            {/* Texto central */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-white font-bold text-sm">
+          {/* Container principal com design futurista */}
+          <div className="relative">
+            {/* Barra de progresso principal */}
+            <div className="w-48 h-3 bg-black/40 rounded-full border border-cyan-400/30 backdrop-blur-sm overflow-hidden shadow-lg">
+              {/* Fundo com gradiente sutil */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent"></div>
+              
+              {/* Barra de progresso animada */}
+              <motion.div
+                className="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 relative overflow-hidden"
+                style={{ width: `${holdProgress * 100}%` }}
+                transition={{ duration: 0.1, ease: "easeOut" }}
+              >
+                {/* Efeito de brilho que se move */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                  animate={{
+                    x: ["-100%", "100%"],
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+              </motion.div>
+              
+              {/* Pontos de luz nas bordas */}
+              <div className="absolute left-1 top-1/2 transform -translate-y-1/2 w-1 h-1 bg-cyan-400 rounded-full shadow-lg shadow-cyan-400/50"></div>
+              <div className="absolute right-1 top-1/2 transform -translate-y-1/2 w-1 h-1 bg-purple-400 rounded-full shadow-lg shadow-purple-400/50"></div>
+            </div>
+
+            {/* Texto de status */}
+            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
+              <motion.div
+                className="bg-black/60 backdrop-blur-sm px-3 py-1 rounded-lg border border-cyan-400/30"
+                animate={{
+                  scale: [1, 1.05, 1],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                <span className="text-cyan-300 text-xs font-medium tracking-wider">
+                  ATIVANDO AUTO-PILOTO
+                </span>
+              </motion.div>
+            </div>
+
+            {/* Porcentagem */}
+            <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2">
+              <span className="text-white/80 text-sm font-mono font-bold">
                 {Math.round(holdProgress * 100)}%
               </span>
             </div>
-          </div>
-          <div className="text-center mt-2">
-            <span className="text-white text-xs bg-black/50 px-2 py-1 rounded">
-              Auto-piloto
-            </span>
+
+            {/* Efeitos de partículas laterais */}
+            <motion.div
+              className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4"
+              animate={{
+                opacity: [0.3, 0.8, 0.3],
+                scale: [0.8, 1.2, 0.8],
+              }}
+              transition={{
+                duration: 1,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <div className="w-2 h-2 bg-cyan-400 rounded-full shadow-lg shadow-cyan-400/50"></div>
+            </motion.div>
+            
+            <motion.div
+              className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4"
+              animate={{
+                opacity: [0.3, 0.8, 0.3],
+                scale: [0.8, 1.2, 0.8],
+              }}
+              transition={{
+                duration: 1,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 0.5,
+              }}
+            >
+              <div className="w-2 h-2 bg-purple-400 rounded-full shadow-lg shadow-purple-400/50"></div>
+            </motion.div>
           </div>
         </motion.div>
       )}
