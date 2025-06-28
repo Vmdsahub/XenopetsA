@@ -594,9 +594,9 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
         proposedMapX * proposedMapX + proposedMapY * proposedMapY,
       );
 
-      // Só detecta colisão na faixa exata da borda visual (1100-1220px)
-      // Ignora completamente colisões falsas com distâncias muito altas ou muito baixas
-      if (distanceFromCenter > 1100 && distanceFromCenter <= 1220) {
+      // Só detecta colisão bem próximo da borda visual (1190-1220px)
+      // Permite navegar até quase tocar a linha tracejada
+      if (distanceFromCenter > 1190 && distanceFromCenter <= 1220) {
         const canvas = canvasRef.current;
         if (!canvas) return { isColliding: true, collisionPoint: null };
 
