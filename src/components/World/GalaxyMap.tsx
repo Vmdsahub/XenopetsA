@@ -672,8 +672,15 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
         WORLD_CONFIG.height,
       );
 
-      // Verifica colisão com barreira usando coordenadas da nave
-      const collision = checkBarrierCollision(proposedX, proposedY);
+      // Verifica colisão com barreira usando coordenadas do mapa visual
+      const currentMapX = mapX.get();
+      const currentMapY = mapY.get();
+      const deltaMapX = (shipPosRef.current.x - proposedX) * 12;
+      const deltaMapY = (shipPosRef.current.y - proposedY) * 12;
+      const proposedMapX = currentMapX + deltaMapX;
+      const proposedMapY = currentMapY + deltaMapY;
+
+      const collision = checkBarrierCollision(proposedMapX, proposedMapY);
       if (collision.isColliding) {
         // Para o auto-piloto em caso de colisão
         setIsAutoPilot(false);
@@ -781,11 +788,18 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
           WORLD_CONFIG.height,
         );
 
-        // Verifica colisão com barreira usando coordenadas da nave
+        // Verifica colisão com barreira usando coordenadas do mapa visual
         let newX = proposedX;
         let newY = proposedY;
 
-        const collision = checkBarrierCollision(proposedX, proposedY);
+        const currentMapX = mapX.get();
+        const currentMapY = mapY.get();
+        const deltaMapX = (shipPosRef.current.x - proposedX) * 12;
+        const deltaMapY = (shipPosRef.current.y - proposedY) * 12;
+        const proposedMapX = currentMapX + deltaMapX;
+        const proposedMapY = currentMapY + deltaMapY;
+
+        const collision = checkBarrierCollision(proposedMapX, proposedMapY);
         if (collision.isColliding) {
           // Ativa flash vermelho
           setIsColliding(true);
@@ -978,12 +992,19 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
       WORLD_CONFIG.height,
     );
 
-    // Verifica colisão com barreira usando coordenadas da nave
+    // Verifica colisão com barreira usando coordenadas do mapa visual
     let newX = proposedX;
     let newY = proposedY;
     let allowMovement = true;
 
-    const collision = checkBarrierCollision(proposedX, proposedY);
+    const currentMapX = mapX.get();
+    const currentMapY = mapY.get();
+    const deltaMapX = (shipPosRef.current.x - proposedX) * 12;
+    const deltaMapY = (shipPosRef.current.y - proposedY) * 12;
+    const proposedMapX = currentMapX + deltaMapX;
+    const proposedMapY = currentMapY + deltaMapY;
+
+    const collision = checkBarrierCollision(proposedMapX, proposedMapY);
     if (collision.isColliding) {
       // Ativa flash vermelho
       setIsColliding(true);
@@ -1087,12 +1108,19 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
         WORLD_CONFIG.height,
       );
 
-      // Verifica colisão com barreira usando coordenadas da nave
+      // Verifica colisão com barreira usando coordenadas do mapa visual
       let newX = proposedX;
       let newY = proposedY;
       let allowMovement = true;
 
-      const collision = checkBarrierCollision(proposedX, proposedY);
+      const currentMapX = mapX.get();
+      const currentMapY = mapY.get();
+      const deltaMapX = (shipPosRef.current.x - proposedX) * 12;
+      const deltaMapY = (shipPosRef.current.y - proposedY) * 12;
+      const proposedMapX = currentMapX + deltaMapX;
+      const proposedMapY = currentMapY + deltaMapY;
+
+      const collision = checkBarrierCollision(proposedMapX, proposedMapY);
       if (collision.isColliding) {
         // Ativa flash vermelho
         setIsColliding(true);
