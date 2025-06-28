@@ -1257,7 +1257,7 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
       }`}
       style={{ userSelect: "none" }}
     >
-      {/* Barra de progresso simples e centralizada acima da nave */}
+      {/* Barra de progresso perfeitamente centralizada acima da nave */}
       {isHolding && holdProgress > 0 && (
         <motion.div
           className="absolute z-50"
