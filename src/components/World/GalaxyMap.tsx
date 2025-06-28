@@ -54,7 +54,7 @@ const generateCircularPoints = () => {
     },
     {
       id: "estacao-omega",
-      name: "Esta��ão Omega",
+      name: "Estação Omega",
       type: "station" as const,
       description: "Centro comercial da galáxia",
       image:
@@ -1380,8 +1380,8 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
           style={{
             left: "50%", // Centro do mundo (100% = WORLD_CONFIG.width)
             top: "50%", // Centro do mundo (100% = WORLD_CONFIG.height)
-            width: "2400px", // Diâmetro 2400px = 1200px de raio (2x maior)
-            height: "2400px",
+            width: "720px", // Diâmetro 720px = 360px de raio (30% * 12)
+            height: "720px",
             transform: "translate(-50%, -50%)",
             borderRadius: "50%",
             zIndex: 5,
