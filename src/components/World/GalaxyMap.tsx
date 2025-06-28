@@ -1260,8 +1260,12 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
       {/* Barra de progresso simples e centralizada acima da nave */}
       {isHolding && holdProgress > 0 && (
         <motion.div
-          className="absolute left-1/2 transform -translate-x-1/2 z-50"
-          style={{ top: "calc(50% - 60px)" }}
+          className="absolute z-50"
+          style={{ 
+            left: "50%", 
+            top: "calc(50% - 60px)",
+            transform: "translateX(-50%)"
+          }}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 10 }}
