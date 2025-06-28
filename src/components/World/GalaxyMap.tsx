@@ -598,8 +598,8 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
       const deltaY = proposedShipY - worldCenterY;
       const distanceFromCenter = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
-      // Só considera colisão se estiver FORA da barreira
-      if (distanceFromCenter > barrierRadius) {
+      // Temporariamente desabilitado para teste
+      if (false && distanceFromCenter > barrierRadius) {
         const canvas = canvasRef.current;
         if (!canvas) return { isColliding: true, collisionPoint: null };
 
