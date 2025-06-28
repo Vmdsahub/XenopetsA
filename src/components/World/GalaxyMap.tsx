@@ -594,8 +594,8 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
         proposedMapX * proposedMapX + proposedMapY * proposedMapY,
       );
 
-      // Detecta colisão apenas quando tentar ultrapassar a borda visual
-      if (distanceFromCenter > barrierRadius) {
+      // Colisão desabilitada para debug
+      if (false) {
         const canvas = canvasRef.current;
         if (!canvas) return { isColliding: true, collisionPoint: null };
 
