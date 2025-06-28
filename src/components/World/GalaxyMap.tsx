@@ -1257,105 +1257,20 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
       }`}
       style={{ userSelect: "none" }}
     >
-      {/* Indicador de progresso do hold para auto-piloto - NOVO DESIGN */}
+      {/* Simple progress bar for auto-pilot activation */}
       {isHolding && holdProgress > 0 && (
         <motion.div
-          className="absolute left-1/2 transform -translate-x-1/2 z-50"
-          style={{ top: "calc(50% - 80px)" }} // Posicionado acima da nave
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 10 }}
+          className="absolute left-1/2 transform -translate-x-1/2 z-50 w-48 h-2 bg-gray-800/60 rounded-full overflow-hidden"
+          style={{ top: "calc(50% - 80px)" }}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
         >
-          {/* Container principal com design futurista */}
-          <div className="relative">
-            {/* Barra de progresso principal */}
-            <div className="w-48 h-3 bg-black/40 rounded-full border border-cyan-400/30 backdrop-blur-sm overflow-hidden shadow-lg">
-              {/* Fundo com gradiente sutil */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent"></div>
-              
-              {/* Barra de progresso animada */}
-              <motion.div
-                className="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 relative overflow-hidden"
-                style={{ width: `${holdProgress * 100}%` }}
-                transition={{ duration: 0.1, ease: "easeOut" }}
-              >
-                {/* Efeito de brilho que se move */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                  animate={{
-                    x: ["-100%", "100%"],
-                  }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
-              </motion.div>
-              
-              {/* Pontos de luz nas bordas */}
-              <div className="absolute left-1 top-1/2 transform -translate-y-1/2 w-1 h-1 bg-cyan-400 rounded-full shadow-lg shadow-cyan-400/50"></div>
-              <div className="absolute right-1 top-1/2 transform -translate-y-1/2 w-1 h-1 bg-purple-400 rounded-full shadow-lg shadow-purple-400/50"></div>
-            </div>
-
-            {/* Texto de status */}
-            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
-              <motion.div
-                className="bg-black/60 backdrop-blur-sm px-3 py-1 rounded-lg border border-cyan-400/30"
-                animate={{
-                  scale: [1, 1.05, 1],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              >
-                <span className="text-cyan-300 text-xs font-medium tracking-wider">
-                  ATIVANDO AUTO-PILOTO
-                </span>
-              </motion.div>
-            </div>
-
-            {/* Porcentagem */}
-            <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2">
-              <span className="text-white/80 text-sm font-mono font-bold">
-                {Math.round(holdProgress * 100)}%
-              </span>
-            </div>
-
-            {/* Efeitos de partículas laterais */}
-            <motion.div
-              className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4"
-              animate={{
-                opacity: [0.3, 0.8, 0.3],
-                scale: [0.8, 1.2, 0.8],
-              }}
-              transition={{
-                duration: 1,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            >
-              <div className="w-2 h-2 bg-cyan-400 rounded-full shadow-lg shadow-cyan-400/50"></div>
-            </motion.div>
-            
-            <motion.div
-              className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4"
-              animate={{
-                opacity: [0.3, 0.8, 0.3],
-                scale: [0.8, 1.2, 0.8],
-              }}
-              transition={{
-                duration: 1,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 0.5,
-              }}
-            >
-              <div className="w-2 h-2 bg-purple-400 rounded-full shadow-lg shadow-purple-400/50"></div>
-            </motion.div>
-          </div>
+          <motion.div
+            className="h-full bg-blue-500 rounded-full"
+            style={{ width: `${holdProgress * 100}%` }}
+            transition={{ duration: 0.1, ease: "easeOut" }}
+          />
         </motion.div>
       )}
 
