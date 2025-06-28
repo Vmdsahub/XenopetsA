@@ -1266,7 +1266,7 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
         >
-          <div className="w-16 h-2 bg-gray-800/60 rounded-full overflow-hidden">
+          <div className="w-12 h-2 bg-gray-800/60 rounded-full overflow-hidden">
             <motion.div
               className="h-full bg-blue-500 rounded-full"
               style={{ width: `${holdProgress * 100}%` }}
