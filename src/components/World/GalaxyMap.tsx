@@ -583,23 +583,19 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
     }, 4000);
   }, []);
 
-  // Função para verificar colisão com barreira - versão corrigida para usar coordenadas da nave
+  // Função para verificar colisão apenas na borda visual da barreira circular
   const checkBarrierCollision = useCallback(
-    (proposedShipX: number, proposedShipY: number) => {
-      // Limites da barreira: raio de 100% do mundo (ou seja, sem limite por enquanto para testar)
-      const barrierRadius = 100; // 100% = sem colisão para testar
+    (proposedMapX: number, proposedMapY: number) => {
+      // Raio da barreira visual em pixels (1200px como mostrado visualmente)
+      const barrierRadius = 1200;
 
-      // Centro do mundo em coordenadas %
-      const worldCenterX = 50; // Centro em 50%
-      const worldCenterY = 50;
+      // Calcula a distância do centro (0,0) no sistema de coordenadas do mapa visual
+      const distanceFromCenter = Math.sqrt(
+        proposedMapX * proposedMapX + proposedMapY * proposedMapY,
+      );
 
-      // Calcula a distância da nave proposta ao centro do mundo
-      const deltaX = proposedShipX - worldCenterX;
-      const deltaY = proposedShipY - worldCenterY;
-      const distanceFromCenter = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-
-      // Temporariamente desabilitado para teste
-      if (false && distanceFromCenter > barrierRadius) {
+      // Detecta colisão apenas quando tentar ultrapassar a borda visual
+      if (distanceFromCenter > barrierRadius) {
         const canvas = canvasRef.current;
         if (!canvas) return { isColliding: true, collisionPoint: null };
 
@@ -607,12 +603,11 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
         const centerY = canvas.height / 2;
 
         // Calcula o ponto exato de colisão na borda da barreira
-        const angle = Math.atan2(deltaY, deltaX);
+        const angle = Math.atan2(proposedMapY, proposedMapX);
 
         // Ponto de colisão na borda da barreira (em coordenadas de tela)
-        const visualRadius = 1200; // Mantém o raio visual original de 1200px
-        const collisionX = centerX + Math.cos(angle) * visualRadius;
-        const collisionY = centerY + Math.sin(angle) * visualRadius;
+        const collisionX = centerX + Math.cos(angle) * barrierRadius;
+        const collisionY = centerY + Math.sin(angle) * barrierRadius;
 
         return {
           isColliding: true,
