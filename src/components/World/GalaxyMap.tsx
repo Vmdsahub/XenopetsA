@@ -1263,8 +1263,7 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
           className="absolute z-50 w-48 h-2 bg-gray-800/60 rounded-full overflow-hidden"
           style={{
             top: "calc(50% - 80px)",
-            left: "50%",
-            transform: "translateX(-50%)",
+            left: "16px",
           }}
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
