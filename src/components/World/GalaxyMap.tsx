@@ -583,19 +583,19 @@ export const GalaxyMap: React.FC<GalaxyMapProps> = ({ onPointClick }) => {
     }, 4000);
   }, []);
 
-  // Função para verificar colisão apenas na borda visual da barreira circular
+  // Função para verificar colisão exatamente na borda da barreira circular visual
   const checkBarrierCollision = useCallback(
     (proposedMapX: number, proposedMapY: number) => {
-      // Raio da barreira visual em pixels - ajustado para coincidir exatamente com a borda visual
-      const barrierRadius = 1195; // Ligeiramente menor para compensar a espessura da linha
+      // Raio exato da barreira visual: 2400px diâmetro = 1200px raio
+      const barrierRadius = 1200;
 
       // Calcula a distância do centro (0,0) no sistema de coordenadas do mapa visual
       const distanceFromCenter = Math.sqrt(
         proposedMapX * proposedMapX + proposedMapY * proposedMapY,
       );
 
-      // Detecta colisão exatamente na borda visual tracejada (1200px)
-      if (distanceFromCenter >= barrierRadius) {
+      // Detecta colisão exatamente quando ultrapassar o raio de 1200px
+      if (distanceFromCenter > barrierRadius) {
         const canvas = canvasRef.current;
         if (!canvas) return { isColliding: true, collisionPoint: null };
 
